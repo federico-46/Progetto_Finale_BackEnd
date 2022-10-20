@@ -15,7 +15,7 @@ To Starting using this Application locally download the project and rename the "
 
 ### Database
 
-You can import the database with this file "fullstack.sql"
+You can import the database with this file "full_app.sql"
 
 ## About Laravel
 
