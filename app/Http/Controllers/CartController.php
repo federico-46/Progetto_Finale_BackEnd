@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class ProductController extends Controller
+class CartController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        return Cart::all();
     }
 
     /**
@@ -35,27 +36,44 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return Product::create($request->all());
+        return Cart::create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        return Product::findOrFail($id);
+
+        $cartItems = DB::select('
+            SELECT carts.id, products.id as product, products.name , products.price, carts.quantity 
+            FROM `carts` 
+            JOIN products ON carts.product_id = products.id
+        ');
+
+        // $cartItems = DB::table('carts')
+        //     ->select('products.name , products.price, carts.quantity')
+        //     ->join('products', 'carts.product_id', '=', 'products.id')
+        //     ->where('carts.user_id', $id)
+        //     ->get();
+
+        // $cartItems = DB::table('carts')
+        //         ->where('user_id', '=', $id)
+        //         ->get();
+
+        return $cartItems;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(Cart $cart)
     {
         //
     }
@@ -64,24 +82,25 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Cart::findOrFail($id);
         $product->update($request->all());
+
         return $product;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        return Product::destroy($id);
+        return Cart::destroy($id);
     }
 }
